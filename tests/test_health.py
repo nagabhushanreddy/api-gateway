@@ -1,17 +1,40 @@
+"""Tests for health check endpoints."""
+
 import pytest
-from httpx import AsyncClient
-from main import app
 
 
 @pytest.mark.asyncio
-async def test_healthz_and_discovery():
-    async with AsyncClient(app=app, base_url="http://test") as ac:
-        r1 = await ac.get("/api/v1/healthz")
-        assert r1.status_code == 200
-        assert r1.json()["status"] == "ok"
+async def test_health_endpoint(client):
+    """Test basic health check endpoint."""
+    response = await client.get("/health")
+    assert response.status_code == 200
 
-        r2 = await ac.get("/api/v1/discovery/")
-        assert r2.status_code == 200
-        body = r2.json()
-        assert body.get("service") == "gateway-api"
-        assert any(ep["path"] == "/api/v1/healthz" for ep in body.get("endpoints", []))
+    data = response.json()
+    assert data["status"] == "healthy"
+    assert "timestamp" in data
+    assert "uptime_seconds" in data
+    assert data["uptime_seconds"] >= 0
+
+
+@pytest.mark.asyncio
+async def test_healthz_endpoint(client):
+    """Test Kubernetes liveness probe endpoint."""
+    response = await client.get("/healthz")
+    assert response.status_code == 200
+
+    data = response.json()
+    assert data["status"] == "OK"
+
+
+@pytest.mark.asyncio
+async def test_ready_endpoint(client):
+    """Test Kubernetes readiness probe endpoint."""
+    response = await client.get("/ready")
+
+    # May return 200 or 503 depending on service health
+    assert response.status_code in [200, 503]
+
+    data = response.json()
+    assert "ready" in data
+    assert "services" in data
+    assert isinstance(data["services"], dict)

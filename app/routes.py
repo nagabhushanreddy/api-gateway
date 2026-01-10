@@ -1,6 +1,6 @@
-from fastapi import APIRouter
 from datetime import datetime
 
+from fastapi import APIRouter
 
 router = APIRouter()
 
@@ -13,13 +13,24 @@ async def healthz():
 @router.get("/discovery/")
 async def discovery():
     return {
-        "service": {"name": "api-gateway", "version": "0.1.0", "description": "Gateway/BFF"},
-        "endpoints": {"health": "/healthz", "docs": "/docs", "openapi": "/openapi.json"},
+        "service": {
+            "name": "api-gateway",
+            "version": "0.1.0",
+            "description": "Gateway/BFF",
+        },
+        "endpoints": {
+            "health": "/healthz",
+            "docs": "/docs",
+            "openapi": "/openapi.json",
+        },
         "capabilities": {"auth": True, "rate_limit": False, "async": True},
     }
+
+
 from fastapi import APIRouter
 
 router = APIRouter()
+
 
 @router.get("/status")
 async def status():
