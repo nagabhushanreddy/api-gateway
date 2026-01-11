@@ -1,9 +1,11 @@
 """API Gateway - Main entry point for all client requests."""
 
+import os
+from pathlib import Path
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
-import logging
 
 from app.config import settings
 from app.routes import router
@@ -22,20 +24,30 @@ from app.services import (
     ServiceDiscovery,
 )
 from app.clients import ServiceClient
+from utils import init_utils, logger
 
-# Configure logging
-logging.basicConfig(
-    level=getattr(logging, settings.LOG_LEVEL.upper()),
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+try:
+    import uvicorn
+except ImportError:  # pragma: no cover - uvicorn optional for ASGI deployments
+    uvicorn = None
+
+CONFIG_DIR = Path(os.environ.get("CONFIG_DIR", "config"))
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifecycle manager for FastAPI application."""
-    # Startup
-    logger.info(f"Starting {settings.SERVICE_NAME} v{settings.VERSION}")
+    # Startup: Initialize utils-service configuration and logging
+    init_utils(CONFIG_DIR)
+    logger.info(
+        f"Starting {settings.SERVICE_NAME} v{settings.SERVICE_VERSION}"
+    )
+    logger.info(
+        "Environment: %s | Server: %s:%s",
+        settings.ENVIRONMENT,
+        settings.HOST,
+        settings.PORT,
+    )
     
     # Initialize services
     jwt_service = JWTService()
@@ -80,8 +92,11 @@ async def lifespan(app: FastAPI):
 # Create FastAPI application
 app = FastAPI(
     title=settings.OPENAPI_TITLE,
-    version=settings.OPENAPI_VERSION,
+    version=settings.SERVICE_VERSION,
     description=settings.OPENAPI_DESCRIPTION,
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json",
     lifespan=lifespan,
 )
 
@@ -113,5 +128,24 @@ app.add_middleware(CorrelationIdMiddleware)
 # Include routers
 app.include_router(router)
 
+
+@app.get("/")
+async def root():
+    """Root endpoint returning service metadata."""
+    return {
+        "service": settings.SERVICE_NAME,
+        "version": settings.SERVICE_VERSION,
+        "environment": settings.ENVIRONMENT,
+        "docs": "/docs",
+    }
+
 logger.info("FastAPI application configured")
 
+
+if __name__ == "__main__" and uvicorn:
+    uvicorn.run(
+        "main:app",
+        host=settings.HOST,
+        port=settings.PORT,
+        reload=settings.ENVIRONMENT.lower() == "development",
+    )

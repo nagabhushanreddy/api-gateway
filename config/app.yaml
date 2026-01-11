@@ -1,0 +1,99 @@
+# API Gateway Application Configuration
+
+service:
+  name: ${APP_NAME:api-gateway}
+  version: ${APP_VERSION:1.0.0}
+  environment: ${ENVIRONMENT:development}
+  debug: ${DEBUG:false}
+
+server:
+  host: ${HOST:0.0.0.0}
+  port: ${PORT:8080}
+
+# Service Routing Configuration
+services:
+  auth:
+    url: ${AUTH_SERVICE_URL:http://localhost:3001}
+    timeout: ${AUTH_SERVICE_TIMEOUT:5}
+    health_check: ${AUTH_HEALTH_CHECK:/health}
+  
+  authz:
+    url: ${AUTHZ_SERVICE_URL:http://localhost:3002}
+    timeout: ${AUTHZ_SERVICE_TIMEOUT:5}
+    health_check: ${AUTHZ_HEALTH_CHECK:/health}
+  
+  entity:
+    url: ${ENTITY_SERVICE_URL:http://localhost:8000}
+    timeout: ${ENTITY_SERVICE_TIMEOUT:5}
+    health_check: ${ENTITY_HEALTH_CHECK:/health}
+  
+  document:
+    url: ${DOCUMENT_SERVICE_URL:http://localhost:8001}
+    timeout: ${DOCUMENT_SERVICE_TIMEOUT:5}
+    health_check: ${DOCUMENT_HEALTH_CHECK:/health}
+  
+  notification:
+    url: ${NOTIFICATION_SERVICE_URL:http://localhost:8004}
+    timeout: ${NOTIFICATION_SERVICE_TIMEOUT:5}
+    health_check: ${NOTIFICATION_HEALTH_CHECK:/health}
+  
+  loan:
+    url: ${LOAN_SERVICE_URL:http://localhost:8005}
+    timeout: ${LOAN_SERVICE_TIMEOUT:5}
+    health_check: ${LOAN_HEALTH_CHECK:/health}
+  
+  profile:
+    url: ${PROFILE_SERVICE_URL:http://localhost:8006}
+    timeout: ${PROFILE_SERVICE_TIMEOUT:5}
+    health_check: ${PROFILE_HEALTH_CHECK:/health}
+
+# JWT Configuration
+jwt:
+  access_secret: ${JWT_ACCESS_SECRET:your-super-secret-access-key-min-32-chars}
+  algorithm: ${JWT_ALGORITHM:HS256}
+
+# Rate Limiting
+rate_limiting:
+  enabled: ${RATE_LIMITING_ENABLED:true}
+  max_requests_per_user_per_minute: ${RATE_LIMIT_MAX_USER:1000}
+  max_requests_per_tenant_per_minute: ${RATE_LIMIT_MAX_TENANT:50000}
+  max_requests_per_ip_per_minute: ${RATE_LIMIT_MAX_IP:10000}
+  redis_backend: ${RATE_LIMIT_REDIS:localhost:6379}
+
+# Circuit Breaker
+circuit_breaker:
+  enabled: ${CIRCUIT_BREAKER_ENABLED:true}
+  failure_threshold: ${CIRCUIT_BREAKER_FAILURE_THRESHOLD:5}
+  success_threshold: ${CIRCUIT_BREAKER_SUCCESS_THRESHOLD:2}
+  timeout_seconds: ${CIRCUIT_BREAKER_TIMEOUT:60}
+
+# Correlation ID
+correlation_id:
+  enabled: ${CORRELATION_ID_ENABLED:true}
+  header_name: ${CORRELATION_ID_HEADER:x-correlation-id}
+
+# CORS
+cors:
+  enabled: ${CORS_ENABLED:true}
+  origins:
+    - ${CORS_ORIGIN_1:http://localhost:3000}
+    - ${CORS_ORIGIN_2:http://localhost:3001}
+  allow_credentials: ${CORS_ALLOW_CREDENTIALS:true}
+
+# OpenAPI
+openapi:
+  enabled: ${OPENAPI_ENABLED:true}
+  spec_url: ${OPENAPI_SPEC_URL:/openapi.json}
+  docs_url: ${OPENAPI_DOCS_URL:/docs}
+
+# Health Check
+health_check:
+  interval_seconds: ${HEALTH_CHECK_INTERVAL:30}
+  timeout_seconds: ${HEALTH_CHECK_TIMEOUT:5}
+
+# API Documentation
+api_docs:
+  enabled: ${API_DOCS_ENABLED:true}
+  title: ${API_TITLE:Multi-Finance API Gateway}
+  version: ${API_VERSION:1.0.0}
+  description: ${API_DESCRIPTION:Single entry point for all microservices}

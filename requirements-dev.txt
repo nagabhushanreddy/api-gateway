@@ -1,28 +1,10 @@
-# Development & Testing Dependencies for API Gateway
-# These dependencies are required for development, testing, and CI/CD workflows.
-# Install with: pip install -r requirements-dev.txt
-# This includes all production dependencies via -r requirements.txt
-
-# Include all production dependencies
 -r requirements.txt
-
-# Testing Framework & Coverage
-pytest==7.4.4           # Testing framework
-pytest-asyncio==0.23.3  # Async test support
-pytest-cov==4.1.0       # Coverage reporting
-pytest-mock==3.12.0     # Mocking and patching utilities
-
-# Code Formatting & Style
-black==24.2.0           # Code formatter (PEP 8 compliant)
-
-# Linting & Quality
-flake8==7.0.0           # Style and error checking
-isort==5.13.2           # Import statement sorting
-mypy==1.8.0             # Static type checker
-
-# Security
-bandit==1.7.7           # Security issue scanner
-
-# Pre-commit Hooks (Optional)
-# pre-commit==3.5.0      # Framework for git hooks
-# Uncomment to use pre-commit hooks for automated checking
+pytest==7.4.4
+pytest-asyncio==0.23.3
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+black==24.2.0
+flake8==7.0.0
+isort==5.13.2
+mypy==1.8.0
+bandit==1.7.7

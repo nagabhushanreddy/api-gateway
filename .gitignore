@@ -1,19 +1,67 @@
-# Byte-compiled / optimized / DLL files
+# =======================================
+# Python Microservices .gitignore Template
+# =======================================
+
+### Environment Configuration
+.env
+.env.local
+.env.*.local
+!.env.example
+
+### Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+.virtualenv/
+python-venv/
+
+### IDE & Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+.vim/
+.emacs*
+*.iml
+
+### Python Bytecode & Cache
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
-
-# Distribution / packaging
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
+*.egg-info/
 .eggs/
+dist/
+build/
+*.egg
+MANIFEST
+
+### Testing & Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+### IDE Cache
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+### Installation
 lib/
 lib64/
 parts/
@@ -22,134 +70,55 @@ var/
 wheels/
 pip-wheel-metadata/
 share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
 
-# PyInstaller
-*.manifest
-*.spec
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-reports/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-.python-version
-
-# pipenv
-Pipfile.lock
-
-# PEP 582
+### PEP 582
 __pypackages__/
 
-# Celery stuff
+### Celery
 celerybeat-schedule
 celerybeat.pid
 
-# SageMath parsed files
-*.sage.py
+### Database Files
+*.db
+*.sqlite
+*.sqlite3
+*.pkl
+*.pickle
+*.json (only for local test data, not config)
 
-# Environments
-.env
-.env.local
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+### Logs & Reports
+logs/
+reports/
+*.log
+*.log.*
+*.out
 
-# Spyder project settings
-.spyderproject
-.spyproject
+### IDE Run Configurations
+.run/
 
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# IDE and Editor settings
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.sublime-workspace
+### macOS
 .DS_Store
-
-# OS generated files
-Thumbs.db
 .AppleDouble
 .LSOverride
+._*
 
-# Dependency lock files (optional - for reference only)
-requirements.txt.lock
+### Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+[Dd]esktop.ini
+$RECYCLE.BIN/
 
-# Local configuration overrides
-*.local.yaml
-config.local.yaml
-app.local.yaml
+### Linux
+.directory
+*~
 
-# Docker
-.dockerignore
-docker-compose.override.yml
-
-# Pre-commit
-.pre-commit-config.yaml.bak
-
-# Temporary files
+### Runtime Generated Files
+.cache/
+tmp/
+temp/
 *.tmp
 *.bak
-*.orig
+
+### OS Specific Files
+.vscode-server/
