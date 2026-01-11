@@ -35,7 +35,12 @@ class JWTService:
         """
         try:
             # Decode and validate token
-            payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
+            payload = jwt.decode(
+                token,
+                self.secret_key,
+                algorithms=[self.algorithm],
+                options={"verify_exp": False}
+            )
 
             # Check expiration
             exp = payload.get("exp")
