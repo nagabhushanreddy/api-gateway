@@ -1,7 +1,7 @@
 """JWT validation service."""
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
 from jose import JWTError, jwt
@@ -40,8 +40,8 @@ class JWTService:
             # Check expiration
             exp = payload.get("exp")
             if exp:
-                exp_datetime = datetime.fromtimestamp(exp)
-                if datetime.utcnow() > exp_datetime:
+                exp_datetime = datetime.fromtimestamp(exp, tz=timezone.utc)
+                if datetime.now(timezone.utc) > exp_datetime:
                     logger.warning("Token has expired")
                     return None
 
@@ -131,7 +131,7 @@ class JWTService:
         if not exp:
             return False
 
-        exp_datetime = datetime.fromtimestamp(exp)
-        threshold = datetime.utcnow() + timedelta(minutes=threshold_minutes)
+        exp_datetime = datetime.fromtimestamp(exp, tz=timezone.utc)
+        threshold = datetime.now(timezone.utc) + timedelta(minutes=threshold_minutes)
 
         return exp_datetime <= threshold

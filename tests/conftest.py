@@ -50,7 +50,7 @@ async def client():
 @pytest.fixture
 def sample_jwt_token():
     """Generate a sample JWT token for testing."""
-    from datetime import datetime, timedelta
+    from datetime import datetime, timedelta, timezone
 
     from jose import jwt
 
@@ -58,7 +58,7 @@ def sample_jwt_token():
         "user_id": "test-user-123",
         "tenant_id": "test-tenant-456",
         "roles": ["user", "customer"],
-        "exp": datetime.utcnow() + timedelta(hours=1),
+        "exp": datetime.now(timezone.utc) + timedelta(hours=1),
     }
 
     token = jwt.encode(

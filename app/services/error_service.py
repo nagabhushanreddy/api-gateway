@@ -1,7 +1,7 @@
 """Error handling and standardization service."""
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
 from app.models.response import ErrorCode, ErrorDetail, ErrorResponse
@@ -33,7 +33,7 @@ class ErrorService:
         error_detail = ErrorDetail(code=code, message=message, details=details)
 
         metadata = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         }
         if correlation_id:
             metadata["correlation_id"] = correlation_id

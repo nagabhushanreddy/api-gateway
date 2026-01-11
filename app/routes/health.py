@@ -1,7 +1,7 @@
 """Health check endpoints."""
 
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Request, status
 from fastapi.responses import JSONResponse
@@ -25,7 +25,7 @@ async def health():
 
     return HealthResponse(
         status="healthy",
-        timestamp=datetime.utcnow().isoformat() + "Z",
+        timestamp=datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         uptime_seconds=uptime_seconds,
     )
 
@@ -69,7 +69,7 @@ async def ready(request: Request):
             last_check_at=(
                 datetime.fromisoformat(health_data["last_check_at"])
                 if health_data["last_check_at"]
-                else datetime.utcnow()
+                else datetime.now(timezone.utc)
             ),
             response_time_ms=health_data["response_time_ms"],
             error=health_data["error"],

@@ -2,9 +2,9 @@
 
 import asyncio
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from enum import Enum
-from typing import Dict
+from typing import Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +61,7 @@ class CircuitBreaker:
                 # Check if recovery timeout has passed
                 if self.last_failure_time:
                     elapsed = (
-                        datetime.utcnow() - self.last_failure_time
+                        datetime.now(timezone.utc) - self.last_failure_time
                     ).total_seconds()
                     if elapsed >= self.recovery_timeout:
                         logger.info(
@@ -103,7 +103,7 @@ class CircuitBreaker:
     async def record_failure(self):
         """Record failed call."""
         async with self._lock:
-            self.last_failure_time = datetime.utcnow()
+            self.last_failure_time = datetime.now(timezone.utc)
 
             if self.state == CircuitState.HALF_OPEN:
                 # Failure in half-open state, reopen circuit

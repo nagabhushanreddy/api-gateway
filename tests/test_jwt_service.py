@@ -1,6 +1,6 @@
 """Tests for JWT service."""
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from jose import jwt
@@ -21,7 +21,7 @@ def test_validate_valid_token(jwt_service):
         "user_id": "test-user-123",
         "tenant_id": "test-tenant-456",
         "roles": ["user", "admin"],
-        "exp": datetime.utcnow() + timedelta(hours=1),
+        "exp": datetime.now(timezone.utc) + timedelta(hours=1),
     }
 
     token = jwt.encode(
@@ -38,7 +38,7 @@ def test_validate_expired_token(jwt_service):
     """Test validation of expired JWT token."""
     payload = {
         "user_id": "test-user-123",
-        "exp": datetime.utcnow() - timedelta(hours=1),
+        "exp": datetime.now(timezone.utc) - timedelta(hours=1),
     }
 
     token = jwt.encode(
@@ -88,9 +88,9 @@ def test_get_roles(jwt_service):
 def test_is_token_near_expiry(jwt_service):
     """Test checking if token is near expiry."""
     # Token expiring in 2 minutes
-    payload = {"exp": (datetime.utcnow() + timedelta(minutes=2)).timestamp()}
+    payload = {"exp": (datetime.now(timezone.utc) + timedelta(minutes=2)).timestamp()}
     assert jwt_service.is_token_near_expiry(payload, threshold_minutes=5) is True
 
     # Token expiring in 10 minutes
-    payload = {"exp": (datetime.utcnow() + timedelta(minutes=10)).timestamp()}
+    payload = {"exp": (datetime.now(timezone.utc) + timedelta(minutes=10)).timestamp()}
     assert jwt_service.is_token_near_expiry(payload, threshold_minutes=5) is False

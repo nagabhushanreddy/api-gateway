@@ -1,10 +1,10 @@
 """Request models for API Gateway."""
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class GatewayRequestContext(BaseModel):
@@ -18,11 +18,11 @@ class GatewayRequestContext(BaseModel):
     user_agent: Optional[str] = None
     request_path: str
     request_method: str
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     trace_context: Optional[str] = None
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "correlation_id": "123e4567-e89b-12d3-a456-426614174000",
                 "user_id": "user-123",
@@ -35,6 +35,7 @@ class GatewayRequestContext(BaseModel):
                 "timestamp": "2024-01-10T10:30:00Z",
             }
         }
+    )
 
 
 class RateLimitConfig(BaseModel):

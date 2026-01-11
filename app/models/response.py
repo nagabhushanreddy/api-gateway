@@ -4,7 +4,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class ErrorCode(str, Enum):
@@ -36,8 +36,8 @@ class StandardResponse(BaseModel):
     error: Optional[ErrorDetail] = None
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "success": True,
                 "data": {"id": "123", "name": "John Doe"},
@@ -48,6 +48,7 @@ class StandardResponse(BaseModel):
                 },
             }
         }
+    )
 
 
 class ErrorResponse(BaseModel):
@@ -58,8 +59,8 @@ class ErrorResponse(BaseModel):
     error: ErrorDetail
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "success": False,
                 "data": None,
@@ -74,6 +75,7 @@ class ErrorResponse(BaseModel):
                 },
             }
         }
+    )
 
 
 class ServiceStatus(BaseModel):
@@ -94,14 +96,15 @@ class HealthResponse(BaseModel):
     timestamp: str
     uptime_seconds: int
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "status": "healthy",
                 "timestamp": "2024-01-10T10:30:00Z",
                 "uptime_seconds": 3600,
             }
         }
+    )
 
 
 class ReadinessResponse(BaseModel):
@@ -110,8 +113,8 @@ class ReadinessResponse(BaseModel):
     ready: bool
     services: Dict[str, ServiceStatus]
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "ready": True,
                 "services": {
@@ -126,3 +129,4 @@ class ReadinessResponse(BaseModel):
                 },
             }
         }
+    )

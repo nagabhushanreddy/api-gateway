@@ -1,6 +1,6 @@
 """Tests for JWT authentication."""
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from jose import jwt
@@ -55,7 +55,7 @@ async def test_expired_jwt_token(client):
         "user_id": "test-user-123",
         "tenant_id": "test-tenant-456",
         "roles": ["user"],
-        "exp": datetime.utcnow() - timedelta(hours=1),  # Expired
+        "exp": datetime.now(timezone.utc) - timedelta(hours=1),  # Expired
     }
 
     expired_token = jwt.encode(

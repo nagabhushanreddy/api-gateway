@@ -2,7 +2,7 @@
 
 import asyncio
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Optional
 
 from app.clients.service_client import ServiceClient
@@ -90,9 +90,9 @@ class ServiceDiscovery:
             self.service_health[service_name] = health
 
         try:
-            start_time = datetime.utcnow()
+            start_time = datetime.now(timezone.utc)
             is_healthy = await self.service_client.health_check(health_url)
-            end_time = datetime.utcnow()
+            end_time = datetime.now(timezone.utc)
 
             response_time_ms = int((end_time - start_time).total_seconds() * 1000)
 
@@ -125,7 +125,7 @@ class ServiceDiscovery:
                 "unhealthy" if health.consecutive_failures >= 3 else "degraded"
             )
             health.error = str(e)
-            health.last_check_at = datetime.utcnow()
+            health.last_check_at = datetime.now(timezone.utc)
 
             logger.error(
                 f"Error checking health of {service_name}: {e} "

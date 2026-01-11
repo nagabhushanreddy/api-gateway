@@ -3,7 +3,7 @@
 import asyncio
 import logging
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Optional
 
 logger = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ class RateLimitService:
             Tuple of (allowed, remaining, reset_at)
         """
         async with self._lock:
-            now = datetime.utcnow()
+            now = datetime.now(timezone.utc)
 
             if key not in self._storage:
                 # First request for this key
@@ -150,7 +150,7 @@ class RateLimitService:
         return (
             True,
             remaining if user_id else 0,
-            reset_at if user_id else datetime.utcnow(),
+            reset_at if user_id else datetime.now(timezone.utc),
             "none",
         )
 
@@ -191,7 +191,7 @@ class RateLimitService:
     async def cleanup_expired(self):
         """Clean up expired rate limit entries."""
         async with self._lock:
-            now = datetime.utcnow()
+            now = datetime.now(timezone.utc)
             expired_keys = []
 
             for key, (count, window_start) in self._storage.items():
